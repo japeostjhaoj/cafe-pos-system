@@ -11,19 +11,34 @@
     <div class="container history-container">
         <header class="header">
             <h1>会計履歴</h1>
+            <div class="header-right">
+                <button id="backToOrderButton" class="btn btn-header">注文入力画面へ戻る</button>
+            </div>
         </header>
 
         <main class="main-content">
-            <section class="transaction-history">
-                <div id="historyList">
+            <div class="tab-container">
+                <button class="tab-button active" data-tab="pending">会計予定</button>
+                <button class="tab-button" data-tab="completed">会計完了</button>
+            </div>
+
+            <section class="transaction-history" id="pendingTransactionsSection">
+                <h2>会計予定リスト</h2>
+                <div id="pendingList">
                     </div>
+                <button id="clearPendingHistoryButton" class="btn btn-danger btn-clear-history">会計予定を全てクリア</button>
+            </section>
+
+            <section class="transaction-history hidden" id="completedTransactionsSection">
+                <h2>会計完了リスト</h2>
+                <div id="completedList">
+                    </div>
+                <button id="clearCompletedHistoryButton" class="btn btn-danger btn-clear-history">会計完了を全てクリア</button>
             </section>
         </main>
 
         <footer class="footer">
-            <button id="backToOrderButton" class="btn btn-secondary">注文入力画面へ戻る</button>
-            <button id="clearHistoryButton" class="btn btn-danger">履歴を全てクリア</button>
-        </footer>
+            </footer>
     </div>
 
     <script src="assets/js/history.js"></script>
