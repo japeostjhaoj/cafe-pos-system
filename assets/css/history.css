@@ -1,0 +1,130 @@
+/* history.html 専用のスタイル */
+.history-container .main-content {
+    padding: 10px; /* パディングを調整 */
+    display: block;
+    overflow-y: auto;
+}
+
+.transaction-history {
+    background-color: #fdfdfd;
+    border-radius: 8px;
+    padding: 10px; /* パディングを調整 */
+    box-shadow: inset 0 0 5px rgba(0,0,0,0.05);
+    margin-bottom: 15px; /* マージンを調整 */
+}
+
+.transaction-item {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    margin-bottom: 10px; /* マージンを調整 */
+    padding: 10px; /* パディングを調整 */
+    background-color: #fff;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+
+.transaction-header {
+    display: flex;
+    justify-content: space-between; /* 全体を左右に配置 */
+    align-items: center;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 8px; /* パディングを調整 */
+    margin-bottom: 8px; /* マージンを調整 */
+    flex-wrap: wrap; /* 要素が収まらない場合に折り返す */
+    gap: 8px; /* 要素間の隙間を調整 */
+}
+
+.transaction-date {
+    font-weight: bold;
+    color: #555;
+    font-size: 0.9em; /* フォントサイズを調整 */
+    flex-basis: 100%; /* スマホでは日付を1行にする */
+    text-align: center; /* 中央寄せ */
+}
+
+.transaction-table {
+    background-color: #ffc107;
+    color: #333;
+    padding: 4px 8px; /* パディングを調整 */
+    border-radius: 5px;
+    font-weight: bold;
+    font-size: 0.8em; /* フォントサイズを調整 */
+}
+
+.transaction-total {
+    font-weight: bold;
+    color: #28a745;
+    font-size: 1.1em; /* フォントサイズを調整 */
+    margin-left: auto; /* 右端に配置 */
+}
+
+.transaction-items-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.transaction-items-list li {
+    padding: 4px 0; /* パディングを調整 */
+    font-size: 0.9em; /* フォントサイズを調整 */
+    color: #666;
+}
+
+.no-history-message {
+    text-align: center;
+    color: #888;
+    padding: 30px; /* パディングを調整 */
+    font-size: 1em; /* フォントサイズを調整 */
+}
+
+.history-container .footer {
+    justify-content: space-between;
+    padding: 10px 15px; /* パディングを調整 */
+    flex-direction: column; /* スマホでは縦並び */
+    gap: 10px;
+}
+
+/* 768px以上のデスクトップ・タブレット向けレイアウト */
+@media (min-width: 769px) {
+    .history-container .main-content {
+        padding: 20px;
+    }
+    .transaction-history {
+        padding: 15px;
+        margin-bottom: 20px;
+    }
+    .transaction-item {
+        margin-bottom: 15px;
+        padding: 15px;
+    }
+    .transaction-header {
+        justify-content: flex-start; /* 左寄せに戻す */
+        flex-wrap: nowrap; /* 折り返しを解除 */
+        gap: 15px; /* 間隔を調整 */
+    }
+    .transaction-date {
+        font-size: 1.1em;
+        flex-basis: auto; /* 幅を自動調整 */
+        text-align: left;
+    }
+    .transaction-table {
+        font-size: 0.9em;
+        padding: 5px 10px;
+    }
+    .transaction-total {
+        font-size: 1.3em;
+        margin-left: auto;
+    }
+    .transaction-items-list li {
+        padding: 5px 0;
+        font-size: 0.95em;
+    }
+    .no-history-message {
+        padding: 50px;
+        font-size: 1.2em;
+    }
+    .history-container .footer {
+        flex-direction: row; /* 横並びに戻す */
+        padding: 15px 20px;
+        gap: 15px;
+    }
+}
