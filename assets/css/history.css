@@ -1,60 +1,109 @@
 /* history.html 専用のスタイル */
 .history-container .main-content {
-    padding: 10px; /* パディングを調整 */
-    display: block;
+    padding: 10px;
+    display: flex; /* flexboxに戻して、タブコンテンツを制御しやすく */
+    flex-direction: column;
     overflow-y: auto;
 }
 
+/* タブコンテナ */
+.tab-container {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 15px;
+    border-bottom: 2px solid #eee;
+    padding-bottom: 5px;
+    flex-wrap: wrap; /* スマホで折り返す */
+    gap: 10px;
+}
+
+.tab-button {
+    background-color: #f0f0f0;
+    color: #555;
+    border: 1px solid #ccc;
+    padding: 10px 20px;
+    border-radius: 5px 5px 0 0; /* 下だけ角丸なし */
+    cursor: pointer;
+    font-size: 1em;
+    font-weight: bold;
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.tab-button:hover {
+    background-color: #e0e0e0;
+}
+
+.tab-button.active {
+    background-color: #5cb85c; /* アクティブなタブの色 */
+    color: white;
+    border-color: #5cb85c;
+    border-bottom: none; /* 下線をなくす */
+}
+
+/* 各履歴セクション */
 .transaction-history {
     background-color: #fdfdfd;
     border-radius: 8px;
-    padding: 10px; /* パディングを調整 */
+    padding: 10px;
     box-shadow: inset 0 0 5px rgba(0,0,0,0.05);
-    margin-bottom: 15px; /* マージンを調整 */
+    margin-bottom: 15px;
+    flex-grow: 1; /* 残りのスペースを埋める */
+    display: flex; /* 内部もflexで制御 */
+    flex-direction: column;
+    overflow-y: auto; /* 各履歴セクション内でスクロール */
+}
+
+.transaction-history h2 {
+    color: #444;
+    margin-top: 0;
+    margin-bottom: 10px;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 8px;
+    font-size: 1.2em;
 }
 
 .transaction-item {
     border: 1px solid #ddd;
     border-radius: 8px;
-    margin-bottom: 10px; /* マージンを調整 */
-    padding: 10px; /* パディングを調整 */
+    margin-bottom: 10px;
+    padding: 10px;
     background-color: #fff;
     box-shadow: 0 2px 5px rgba(0,0,0,0.05);
 }
 
 .transaction-header {
     display: flex;
-    justify-content: space-between; /* 全体を左右に配置 */
+    justify-content: space-between;
     align-items: center;
     border-bottom: 1px solid #eee;
-    padding-bottom: 8px; /* パディングを調整 */
-    margin-bottom: 8px; /* マージンを調整 */
-    flex-wrap: wrap; /* 要素が収まらない場合に折り返す */
-    gap: 8px; /* 要素間の隙間を調整 */
+    padding-bottom: 8px;
+    margin-bottom: 8px;
+    flex-wrap: wrap;
+    gap: 8px;
 }
 
 .transaction-date {
     font-weight: bold;
     color: #555;
-    font-size: 0.9em; /* フォントサイズを調整 */
-    flex-basis: 100%; /* スマホでは日付を1行にする */
-    text-align: center; /* 中央寄せ */
+    font-size: 0.9em;
+    flex-basis: 100%; /* スマホでは日付を1行に */
+    text-align: center;
 }
 
 .transaction-table {
     background-color: #ffc107;
     color: #333;
-    padding: 4px 8px; /* パディングを調整 */
+    padding: 4px 8px;
     border-radius: 5px;
     font-weight: bold;
-    font-size: 0.8em; /* フォントサイズを調整 */
+    font-size: 0.8em;
 }
 
 .transaction-total {
     font-weight: bold;
     color: #28a745;
-    font-size: 1.1em; /* フォントサイズを調整 */
-    margin-left: auto; /* 右端に配置 */
+    font-size: 1.1em;
+    margin-left: auto;
 }
 
 .transaction-items-list {
@@ -64,29 +113,66 @@
 }
 
 .transaction-items-list li {
-    padding: 4px 0; /* パディングを調整 */
-    font-size: 0.9em; /* フォントサイズを調整 */
+    padding: 4px 0;
+    font-size: 0.9em;
     color: #666;
+}
+
+.transaction-actions { /* ボタンをまとめるコンテナ */
+    display: flex;
+    justify-content: flex-end; /* ボタンを右寄せ */
+    gap: 8px; /* ボタン間のスペース */
+    margin-top: 10px; /* 上にスペース */
+    flex-wrap: wrap; /* スマホでボタンが収まらない場合に折り返す */
+}
+
+.transaction-actions .btn { /* アクションボタンのスタイル */
+    padding: 6px 12px;
+    font-size: 0.9em;
+    border-radius: 4px;
+}
+
+/* 新しく追加: 会計予定に戻すボタンのスタイル */
+.btn-info { /* btn-infoは新しいクラス名 */
+    background-color: #17a2b8; /* 青緑系 */
+    color: white;
+}
+
+.btn-info:hover {
+    background-color: #138496;
 }
 
 .no-history-message {
     text-align: center;
     color: #888;
-    padding: 30px; /* パディングを調整 */
-    font-size: 1em; /* フォントサイズを調整 */
+    padding: 30px;
+    font-size: 1em;
 }
 
-.history-container .footer {
-    justify-content: space-between;
-    padding: 10px 15px; /* パディングを調整 */
-    flex-direction: column; /* スマホでは縦並び */
-    gap: 10px;
+.btn-clear-history { /* 各セクションのクリアボタン */
+    margin-top: 15px;
+    width: 100%;
+    padding: 10px;
+}
+
+/* 隠すクラス */
+.hidden {
+    display: none;
 }
 
 /* 768px以上のデスクトップ・タブレット向けレイアウト */
 @media (min-width: 769px) {
     .history-container .main-content {
         padding: 20px;
+        flex-direction: column; /* こちらもcolumnで維持 */
+    }
+    .tab-container {
+        justify-content: flex-start; /* 左寄せに戻す */
+        gap: 0;
+        margin-bottom: 20px;
+    }
+    .tab-button {
+        padding: 10px 20px;
     }
     .transaction-history {
         padding: 15px;
@@ -97,13 +183,13 @@
         padding: 15px;
     }
     .transaction-header {
-        justify-content: flex-start; /* 左寄せに戻す */
-        flex-wrap: nowrap; /* 折り返しを解除 */
-        gap: 15px; /* 間隔を調整 */
+        justify-content: flex-start;
+        flex-wrap: nowrap;
+        gap: 15px;
     }
     .transaction-date {
         font-size: 1.1em;
-        flex-basis: auto; /* 幅を自動調整 */
+        flex-basis: auto;
         text-align: left;
     }
     .transaction-table {
@@ -122,9 +208,12 @@
         padding: 50px;
         font-size: 1.2em;
     }
-    .history-container .footer {
-        flex-direction: row; /* 横並びに戻す */
-        padding: 15px 20px;
-        gap: 15px;
+    .btn-clear-history {
+        width: auto; /* 幅を自動調整 */
+        padding: 12px 25px;
+    }
+    
+    .transaction-actions {
+        flex-wrap: nowrap; /* ボタンの折り返しを解除 */
     }
 }
