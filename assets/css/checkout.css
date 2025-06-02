@@ -1,0 +1,61 @@
+/* checkout.html専用のスタイル */
+.checkout-container .main-content {
+    padding: 30px;
+}
+
+.order-summary h2 {
+    color: #444;
+    margin-top: 0;
+    margin-bottom: 20px;
+    border-bottom: 2px solid #ddd;
+    padding-bottom: 15px;
+}
+
+.order-summary ul {
+    list-style: none;
+    padding: 0;
+    margin-bottom: 20px;
+}
+
+.order-summary ul li {
+    padding: 10px 0;
+    border-bottom: 1px dashed #eee;
+    display: flex; /* 追加: 横並びにするため */
+    justify-content: space-between; /* 追加: 左右に配置 */
+    align-items: center; /* 追加: 垂直方向中央揃え */
+    font-size: 1.1em; /* 追加: 少し大きく */
+}
+
+.order-summary ul li:last-child {
+    border-bottom: none;
+}
+
+.order-summary ul li .item-name {
+    font-weight: bold;
+    color: #333;
+}
+
+.order-summary ul li .item-details {
+    color: #666;
+    text-align: right; /* 右寄せ */
+}
+
+
+.total-amount {
+    font-size: 1.6em;
+    font-weight: bold;
+    text-align: right;
+    padding-top: 20px;
+    border-top: 2px solid #ddd;
+    margin-top: 20px; /* 少しスペースを追加 */
+}
+
+.total-amount span {
+    color: #28a745; /* 合計金額を目立たせる色 */
+    font-size: 1.2em; /* 金額をさらに大きく */
+}
+
+.checkout-container .footer {
+    justify-content: space-between; /* 戻るボタンと完了ボタンを左右に配置 */
+    padding: 15px 30px; /* パディングを調整 */
+}
