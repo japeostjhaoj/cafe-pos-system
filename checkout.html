@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>カフェ会計システム - 注文確認</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="assets/css/checkout.css">
+</head>
+<body>
+    <div class="container checkout-container">
+        <header class="header">
+            <h1>注文確認</h1>
+        </header>
+
+        <main class="main-content">
+            <section class="order-summary">
+                <h2>ご注文内容</h2>
+                <ul id="orderSummaryList">
+                    </ul>
+                <div class="total-amount">
+                    合計金額: <span id="totalAmount">$00A50</span>
+                </div>
+            </section>
+        </main>
+
+        <footer class="footer">
+            <button id="backButton" class="btn btn-secondary">戻る</button>
+            <button id="completeButton" class="btn btn-primary">会計完了</button>
+        </footer>
+    </div>
+
+    <script src="assets/js/checkout.js"></script>
+</body>
+</html>
