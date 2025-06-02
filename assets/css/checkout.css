@@ -1,29 +1,32 @@
 /* checkout.html専用のスタイル */
 .checkout-container .main-content {
-    padding: 30px;
+    padding: 15px; /* パディングを調整 */
+    overflow-y: auto; /* スクロールを許可 */
 }
 
 .order-summary h2 {
     color: #444;
     margin-top: 0;
-    margin-bottom: 20px;
+    margin-bottom: 15px; /* マージンを調整 */
     border-bottom: 2px solid #ddd;
-    padding-bottom: 15px;
+    padding-bottom: 10px; /* パディングを調整 */
+    font-size: 1.3em; /* フォントサイズを調整 */
 }
 
 .order-summary ul {
     list-style: none;
     padding: 0;
-    margin-bottom: 20px;
+    margin-bottom: 15px;
 }
 
 .order-summary ul li {
-    padding: 10px 0;
+    padding: 8px 0; /* パディングを調整 */
     border-bottom: 1px dashed #eee;
-    display: flex; /* 追加: 横並びにするため */
-    justify-content: space-between; /* 追加: 左右に配置 */
-    align-items: center; /* 追加: 垂直方向中央揃え */
-    font-size: 1.1em; /* 追加: 少し大きく */
+    display: flex;
+    flex-wrap: wrap; /* 長い場合に折り返す */
+    justify-content: space-between;
+    align-items: center;
+    font-size: 1em; /* フォントサイズを調整 */
 }
 
 .order-summary ul li:last-child {
@@ -33,29 +36,69 @@
 .order-summary ul li .item-name {
     font-weight: bold;
     color: #333;
+    flex-basis: 60%; /* 名前が長くなる可能性を考慮 */
 }
 
 .order-summary ul li .item-details {
     color: #666;
-    text-align: right; /* 右寄せ */
+    text-align: right;
+    flex-basis: 35%; /* 詳細を右寄せ */
 }
 
 
 .total-amount {
-    font-size: 1.6em;
+    font-size: 1.4em; /* フォントサイズを調整 */
     font-weight: bold;
     text-align: right;
-    padding-top: 20px;
+    padding-top: 15px; /* パディングを調整 */
     border-top: 2px solid #ddd;
-    margin-top: 20px; /* 少しスペースを追加 */
+    margin-top: 15px;
 }
 
 .total-amount span {
-    color: #28a745; /* 合計金額を目立たせる色 */
-    font-size: 1.2em; /* 金額をさらに大きく */
+    color: #28a745;
+    font-size: 1.1em; /* 金額をさらに大きく */
 }
 
 .checkout-container .footer {
-    justify-content: space-between; /* 戻るボタンと完了ボタンを左右に配置 */
-    padding: 15px 30px; /* パディングを調整 */
+    justify-content: space-between;
+    padding: 10px 15px; /* パディングを調整 */
+    flex-direction: column; /* スマホでは縦並び */
+    gap: 10px;
+}
+
+/* 768px以上のデスクトップ・タブレット向けレイアウト */
+@media (min-width: 769px) {
+    .checkout-container .main-content {
+        padding: 30px;
+    }
+    .order-summary h2 {
+        font-size: 1.4em;
+        margin-bottom: 20px;
+        padding-bottom: 15px;
+    }
+    .order-summary ul li {
+        padding: 10px 0;
+        font-size: 1.1em;
+        flex-wrap: nowrap; /* 折り返しを解除 */
+    }
+    .order-summary ul li .item-name {
+        flex-basis: auto;
+    }
+    .order-summary ul li .item-details {
+        flex-basis: auto;
+    }
+    .total-amount {
+        font-size: 1.6em;
+        padding-top: 20px;
+        margin-top: 20px;
+    }
+    .total-amount span {
+        font-size: 1.2em;
+    }
+    .checkout-container .footer {
+        flex-direction: row; /* 横並びに戻す */
+        padding: 15px 30px;
+        gap: 15px;
+    }
 }
