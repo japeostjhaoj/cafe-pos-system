@@ -8,7 +8,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const viewHistoryButton = document.getElementById('viewHistoryButton');
     const tableNoInput = document.getElementById('tableNo');
 
-    // 仮のメニューデータ
     const menus = [
         { id: 'coffee', name: 'コーヒー', price: 400 },
         { id: 'tea', name: '紅茶', price: 350 },
@@ -20,9 +19,8 @@ document.addEventListener('DOMContentLoaded', () => {
         { id: 'salad', name: 'サラダ', price: 550 },
     ];
 
-    let currentOrder = {}; // { menuId: count }
+    let currentOrder = {};
 
-    // 現在の日付と時刻を更新
     function updateDateTime() {
         const now = new Date();
         const options = {
@@ -35,12 +33,11 @@ document.addEventListener('DOMContentLoaded', () => {
         };
         datetimeElement.textContent = now.toLocaleString('ja-JP', options);
     }
-    setInterval(updateDateTime, 1000); // 1秒ごとに更新
-    updateDateTime(); // 初期表示
+    setInterval(updateDateTime, 1000);
+    updateDateTime();
 
-    // メニューボタンを生成
     function renderMenuButtons() {
-        menuGrid.innerHTML = ''; // 既存のボタンをクリア
+        menuGrid.innerHTML = '';
         menus.forEach(menu => {
             const button = document.createElement('div');
             button.classList.add('menu-item-button');
@@ -54,7 +51,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // 注文リストを更新
     function renderOrderList() {
         orderList.innerHTML = '';
         let subtotal = 0;
@@ -89,7 +85,6 @@ document.addEventListener('DOMContentLoaded', () => {
         subtotalDisplay.textContent = `¥${subtotal.toLocaleString()}`;
         checkoutButton.textContent = `合計 ¥${subtotal.toLocaleString()} / 会計へ`;
 
-        // 数量変更・削除ボタンにイベントリスナーを再設定
         orderList.querySelectorAll('.increase-qty').forEach(button => {
             button.addEventListener('click', (e) => {
                 const id = e.target.dataset.id;
@@ -105,59 +100,63 @@ document.addEventListener('DOMContentLoaded', () => {
         orderList.querySelectorAll('.remove-item').forEach(button => {
             button.addEventListener('click', (e) => {
                 const id = e.target.dataset.id;
-                delete currentOrder[id]; // 完全に削除
+                delete currentOrder[id];
                 renderOrderList();
             });
         });
     }
 
-    // メニュー項目を追加
     function addMenuItem(menuId) {
         currentOrder[menuId] = (currentOrder[menuId] || 0) + 1;
         renderOrderList();
     }
 
-    // メニュー項目を減らす
     function removeMenuItem(menuId) {
         if (currentOrder[menuId] > 1) {
             currentOrder[menuId]--;
         } else {
-            delete currentOrder[menuId]; // 1個以下になったらリストから削除
+            delete currentOrder[menuId];
         }
         renderOrderList();
     }
 
-    // クリアボタンの機能
     clearButton.addEventListener('click', () => {
         currentOrder = {};
         renderOrderList();
-        tableNoInput.value = 1; // テーブル番号もリセット
+        tableNoInput.value = 1;
     });
 
-    // 会計ボタンの機能（localStorageに保存してcheckout.htmlへ遷移）
+    // 会計ボタンの機能（一時保存用のデータを渡す）
     checkoutButton.addEventListener('click', () => {
-        const tableNo = tableNoInput.value ? parseInt(tableNoInput.value) : 0; // テーブル番号を取得
+        const tableNo = tableNoInput.value ? parseInt(tableNoInput.value) : 0;
         if (tableNo <= 0) {
             alert('有効なテーブル番号を入力してください。');
             tableNoInput.focus();
             return;
         }
 
+        if (Object.keys(currentOrder).length === 0) { // 注文がない場合はアラート
+            alert('注文がありません。メニューを選択してください。');
+            return;
+        }
+
+        // ここでユニークな transactionId を生成
+        const transactionId = `temp_${Date.now()}`;
+
         const orderData = {
+            transactionId: transactionId, // 一時的なID
             tableNo: tableNo,
             items: currentOrder,
-            subtotal: calculateSubtotal() // 小計を渡す
+            subtotal: calculateSubtotal()
         };
-        localStorage.setItem('currentOrderToCheckout', JSON.stringify(orderData)); // 渡すデータを変更
+        localStorage.setItem('currentOrderToCheckout', JSON.stringify(orderData));
         window.location.href = 'checkout.html';
     });
 
-    // 履歴を見るボタンの機能（新しく追加）
     viewHistoryButton.addEventListener('click', () => {
-        window.location.href = 'history.html';
+        window.location.href = 'history.html'; // 既存のhistory.htmlは「会計予定」と「会計完了」の両方を表示するページに変更
     });
 
-    // 小計を計算するヘルパー関数
     function calculateSubtotal() {
         let subtotal = 0;
         for (const menuId in currentOrder) {
@@ -170,7 +169,6 @@ document.addEventListener('DOMContentLoaded', () => {
         return subtotal;
     }
 
-    // 初期化
     renderMenuButtons();
     renderOrderList();
 });
