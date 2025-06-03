@@ -20,7 +20,7 @@
             <div class="tab-container">
                 <button class="tab-button active" data-tab="pending">会計予定</button>
                 <button class="tab-button" data-tab="completed">会計完了</button>
-            </div>
+                <button class="tab-button" data-tab="all">一覧</button> </div>
 
             <section class="transaction-history" id="pendingTransactionsSection">
                 <h2>会計予定リスト</h2>
@@ -35,6 +35,11 @@
                     </div>
                 <button id="clearCompletedHistoryButton" class="btn btn-danger btn-clear-history">会計完了を全てクリア</button>
             </section>
+
+            <section class="transaction-history hidden" id="allTransactionsSection"> <h2>全会計履歴一覧</h2>
+                <div id="allList">
+                    </div>
+                <button id="clearAllHistoryButton" class="btn btn-danger btn-clear-history">一覧を全てクリア</button> </section>
         </main>
 
         <footer class="footer">
