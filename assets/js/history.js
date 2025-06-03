@@ -1,13 +1,16 @@
 document.addEventListener('DOMContentLoaded', () => {
     const pendingList = document.getElementById('pendingList');
     const completedList = document.getElementById('completedList');
+    const allList = document.getElementById('allList'); // 新しく追加
     const backToOrderButton = document.getElementById('backToOrderButton');
     const clearPendingHistoryButton = document.getElementById('clearPendingHistoryButton');
     const clearCompletedHistoryButton = document.getElementById('clearCompletedHistoryButton');
+    const clearAllHistoryButton = document.getElementById('clearAllHistoryButton'); // 新しく追加
 
     const tabButtons = document.querySelectorAll('.tab-button');
     const pendingSection = document.getElementById('pendingTransactionsSection');
     const completedSection = document.getElementById('completedTransactionsSection');
+    const allSection = document.getElementById('allTransactionsSection'); // 新しく追加
 
     // タブ切り替え機能
     tabButtons.forEach(button => {
@@ -16,12 +19,16 @@ document.addEventListener('DOMContentLoaded', () => {
             button.classList.add('active');
 
             const tab = button.dataset.tab;
+            pendingSection.classList.add('hidden');
+            completedSection.classList.add('hidden');
+            allSection.classList.add('hidden'); // 全てのセクションを一旦隠す
+
             if (tab === 'pending') {
                 pendingSection.classList.remove('hidden');
-                completedSection.classList.add('hidden');
-            } else {
-                pendingSection.classList.add('hidden');
+            } else if (tab === 'completed') {
                 completedSection.classList.remove('hidden');
+            } else if (tab === 'all') { // 新しいタブの処理
+                allSection.classList.remove('hidden');
             }
             renderHistory(); // タブ切り替え時に再描画
         });
@@ -31,9 +38,11 @@ document.addEventListener('DOMContentLoaded', () => {
     function renderHistory() {
         pendingList.innerHTML = '';
         completedList.innerHTML = '';
+        allList.innerHTML = ''; // 全履歴リストもクリア
 
         let pendingTransactions = JSON.parse(localStorage.getItem('pendingTransactions') || '[]');
         let completedTransactions = JSON.parse(localStorage.getItem('completedTransactions') || '[]');
+        let longTermHistory = JSON.parse(localStorage.getItem('longTermHistory') || '[]'); // 新しく読み込み
 
         // 会計予定リストの表示
         if (pendingTransactions.length === 0) {
@@ -54,6 +63,18 @@ document.addEventListener('DOMContentLoaded', () => {
                 completedList.appendChild(transactionDiv);
             });
         }
+
+        // 全会計履歴一覧の表示（新しく追加）
+        if (longTermHistory.length === 0) {
+            allList.innerHTML = '<p class="no-history-message">まだ会計履歴はありません。</p>';
+        } else {
+            // 日付の新しい順に並べ替え (Date.now() が新しいほど大きいので降順)
+            longTermHistory.sort((a, b) => b.id - a.id); 
+            longTermHistory.forEach(transaction => {
+                const transactionDiv = createTransactionItem(transaction, 'all'); // typeを'all'に
+                allList.appendChild(transactionDiv);
+            });
+        }
     }
 
     // トランザクションアイテムを生成するヘルパー関数
@@ -69,9 +90,9 @@ document.addEventListener('DOMContentLoaded', () => {
         if (type === 'pending') {
             actionButton = `<button class="btn btn-primary complete-transaction" data-id="${transaction.id}">会計完了</button>`;
         } else if (type === 'completed') {
-            // 新しく追加: 会計完了リストに「会計予定に戻す」ボタン
             actionButton = `<button class="btn btn-info revert-to-pending" data-id="${transaction.id}">会計予定に戻す</button>`;
         }
+        // 'all'タブではアクションボタンは不要、または閲覧のみ
 
         transactionDiv.innerHTML = `
             <div class="transaction-header">
@@ -110,10 +131,18 @@ document.addEventListener('DOMContentLoaded', () => {
             const transactionType = e.target.dataset.type;
             deleteTransaction(transactionId, transactionType);
         }
-        // 新しく追加: 「会計予定に戻す」ボタンのイベント
         if (e.target.classList.contains('revert-to-pending')) {
             const transactionId = e.target.dataset.id;
             revertToPending(transactionId);
+        }
+    });
+
+    // 削除ボタンのイベントリスナー（全履歴リスト用）
+    allList.addEventListener('click', (e) => {
+        if (e.target.classList.contains('delete-transaction')) {
+            const transactionId = e.target.dataset.id;
+            const transactionType = e.target.dataset.type; // 'all'
+            deleteTransaction(transactionId, transactionType);
         }
     });
 
@@ -122,22 +151,28 @@ document.addEventListener('DOMContentLoaded', () => {
     function completeTransaction(id) {
         let pendingTransactions = JSON.parse(localStorage.getItem('pendingTransactions') || '[]');
         let completedTransactions = JSON.parse(localStorage.getItem('completedTransactions') || '[]');
+        let longTermHistory = JSON.parse(localStorage.getItem('longTermHistory') || '[]'); // 新しく読み込み
 
         const transactionIndex = pendingTransactions.findIndex(t => t.id === id);
         if (transactionIndex > -1) {
-            const [completed] = pendingTransactions.splice(transactionIndex, 1); // pendingから削除
-            completed.status = 'completed'; // ステータス変更
-            completed.completionDate = new Date().toLocaleString('ja-JP'); // 完了日時を追加
-            completedTransactions.unshift(completed); // completedに追加
+            const [completed] = pendingTransactions.splice(transactionIndex, 1);
+            completed.status = 'completed';
+            completed.completionDate = new Date().toLocaleString('ja-JP');
+            completedTransactions.unshift(completed); // 短期完了履歴に追加
+
+            // 新しく追加: 長期履歴にも保存
+            const longTermItem = { ...completed }; // オブジェクトをコピー
+            longTermHistory.unshift(longTermItem); // 長期履歴の先頭に追加
 
             localStorage.setItem('pendingTransactions', JSON.stringify(pendingTransactions));
             localStorage.setItem('completedTransactions', JSON.stringify(completedTransactions));
+            localStorage.setItem('longTermHistory', JSON.stringify(longTermHistory)); // 長期履歴を保存
             renderHistory();
             alert(`会計が完了しました。\nテーブルNo: ${completed.tableNo} - 合計: ¥${completed.total.toLocaleString()}`);
         }
     }
 
-    // 新しく追加: トランザクションを会計予定に戻す関数
+    // トランザクションを会計予定に戻す関数
     function revertToPending(id) {
         if (!confirm('この会計を会計予定リストに戻してもよろしいですか？')) {
             return;
@@ -145,13 +180,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
         let pendingTransactions = JSON.parse(localStorage.getItem('pendingTransactions') || '[]');
         let completedTransactions = JSON.parse(localStorage.getItem('completedTransactions') || '[]');
+        // longTermHistoryからは削除しない。長期履歴は一度完了したらそのまま残す方針。
 
         const transactionIndex = completedTransactions.findIndex(t => t.id === id);
         if (transactionIndex > -1) {
-            const [reverted] = completedTransactions.splice(transactionIndex, 1); // completedから削除
-            reverted.status = 'pending'; // ステータスをpendingに戻す
-            delete reverted.completionDate; // 完了日時を削除
-            pendingTransactions.unshift(reverted); // pendingに追加
+            const [reverted] = completedTransactions.splice(transactionIndex, 1);
+            reverted.status = 'pending';
+            delete reverted.completionDate;
+            pendingTransactions.unshift(reverted);
 
             localStorage.setItem('pendingTransactions', JSON.stringify(pendingTransactions));
             localStorage.setItem('completedTransactions', JSON.stringify(completedTransactions));
@@ -159,7 +195,6 @@ document.addEventListener('DOMContentLoaded', () => {
             alert(`会計が会計予定リストに戻されました。\nテーブルNo: ${reverted.tableNo} - 合計: ¥${reverted.total.toLocaleString()}`);
         }
     }
-
 
     // トランザクションを削除する関数
     function deleteTransaction(id, type) {
@@ -175,8 +210,11 @@ document.addEventListener('DOMContentLoaded', () => {
         } else if (type === 'completed') {
             targetList = JSON.parse(localStorage.getItem('completedTransactions') || '[]');
             localStorageKey = 'completedTransactions';
+        } else if (type === 'all') { // 新しく追加
+            targetList = JSON.parse(localStorage.getItem('longTermHistory') || '[]');
+            localStorageKey = 'longTermHistory';
         } else {
-            return; // 不明なタイプ
+            return;
         }
 
         const filteredList = targetList.filter(t => t.id !== id);
@@ -203,6 +241,14 @@ document.addEventListener('DOMContentLoaded', () => {
     clearCompletedHistoryButton.addEventListener('click', () => {
         if (confirm('全ての会計完了履歴を削除してもよろしいですか？この操作は元に戻せません。')) {
             localStorage.removeItem('completedTransactions');
+            renderHistory();
+        }
+    });
+
+    // 全会計履歴を全てクリアボタン（新しく追加）
+    clearAllHistoryButton.addEventListener('click', () => {
+        if (confirm('全ての長期会計履歴を削除してもよろしいですか？この操作は元に戻せません。')) {
+            localStorage.removeItem('longTermHistory');
             renderHistory();
         }
     });
